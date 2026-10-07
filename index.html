@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RoboNav dashboard</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="shell">
+<header>
+ <div class="logo">Robo<b>Nav</b></div><div class="tag0">Simple Control. Smart Robots.</div>
+ <span class="chip"><i class="dot"></i>Robot Connected</span>
+ <select class="sel" id="mode" aria-label="Mode"><option>Student Mode</option><option>Engineer Mode</option></select>
+ <button class="chip" id="theme" aria-label="Toggle theme">Light / Dark</button>
+ <div class="av">V</div><div style="font-size:13px"><b>Vishwa P</b><br><span style="color:var(--mute)">Student</span></div>
+</header>
+<nav id="nav">
+ <a href="#home" class="on"><span class="ic">⌂</span>Home</a>
+ <a href="#map"><span class="ic">▦</span>Map</a>
+ <a href="#goto"><span class="ic">⌖</span>Locations</a>
+ <a href="#manual"><span class="ic">◉</span>Drive</a>
+ <a href="#goto"><span class="ic">⤳</span>Routes</a>
+ <a href="#set" id="setLink"><span class="ic">⚙</span>Settings</a>
+ <div class="learn">Explore<br>Control<br>Learn</div>
+</nav>
+<main id="home">
+ <section class="card hello">
+  <div><h1>Hello, Vishwa 👋</h1><p>Your robot is ready. Choose a destination or control it manually.</p></div>
+  <div class="stats">
+   <div class="stat"><div class="bub">✓</div><div><small>Robot Status</small><b id="status">Ready</b><small id="statusSub">No errors</small></div></div>
+   <div class="stat"><div class="bub">▮</div><div><small>Battery</small><b>82%</b><small>~ 2h 15m</small></div></div>
+   <div class="stat"><div class="bub" style="background:#18a48a">⌖</div><div><small>Current Location</small><b id="loc">Lab</b></div></div>
+  </div>
+ </section>
+
+ <div class="cols">
+  <div class="left">
+   <section class="card" id="map">
+    <div class="hd"><h2>Live Map</h2><div class="seg" id="seg"><button class="on" data-v="2">2D</button><button data-v="3">3D</button></div></div>
+    <div class="map" id="mapbox">
+     <div class="stage" id="stage"><div class="plane" id="plane">
+      <div class="floor" id="floor"></div>
+      <svg class="pth" viewBox="0 0 1000 512" preserveAspectRatio="none"><path id="path" d=""/></svg>
+      <div class="flat"><div id="goal"></div><div id="rbt"><div id="rot"></div></div></div>
+      <div class="pins" id="pins"></div>
+     </div></div>
+     <div class="ov zoom"><button id="zi" aria-label="Zoom in">+</button><button id="zo" aria-label="Zoom out">−</button></div>
+     <div class="ov" id="hint3"><span>Drag to rotate</span><button id="rv">Reset view</button></div>
+     <div class="ov bar2" id="addbar"><div id="ab1" style="display:flex;gap:8px;align-items:center"><span>Click the map to place a location</span><button id="abRobot">Use robot position</button><button id="abCancel">Cancel</button></div>
+      <div id="ab2" style="display:none;gap:8px;align-items:center"><input id="abName" maxlength="24" aria-label="Location name"><button class="go" id="abSave">Save</button><button id="abCancel2">Cancel</button></div></div>
+     <div class="ov bar2" id="ask"><span id="askTxt">Go here?</span><button class="go" id="yes">Yes</button><button id="no">No</button></div>
+     <div class="ov" id="toast"></div>
+    </div>
+    <div class="legend"><span><i style="background:#173d72"></i>Open floor</span><span><i style="background:#e5484d"></i>Wall / obstacle</span><span><i style="background:#f5b942"></i>Robot</span><span><i style="background:#8b6cf0"></i>Saved location</span></div>
+    <div class="prog"><span style="font-size:22px">⌖</span>
+     <div class="t"><b id="pt">Idle</b><br><small id="ps">Choose a destination to begin</small></div>
+     <div class="bar"><i id="pb"></i></div><b id="pp">0%</b></div>
+   </section>
+
+   <div class="tiles">
+    <div class="tile t1"><small>Battery</small><b>82%</b><div class="mini"><i></i></div><small>~ 2h 15m remaining</small></div>
+    <div class="tile t2"><small>Connection</small><b>Excellent</b><small>Signal Strong</small></div>
+    <div class="tile t3"><small>Robot Health</small><b>Normal</b><small>All systems working</small></div>
+    <section class="card act"><div class="hd" style="margin-bottom:4px"><h2 style="font-size:16px">Recent Activity</h2></div><div id="log">
+     <div><time>09:46</time><span class="tk">✓</span>Reached Location 1</div>
+     <div><time>09:43</time><span class="tk">▶</span>Started</div></div></section>
+   </div>
+  </div>
+
+  <div class="right">
+   <section class="card" id="goto">
+    <div class="hd"><div><h2>Go To Location</h2><small>Select a destination</small></div><button class="add" id="addBtn">+ Add</button></div>
+    <div id="dests"></div>
+    <button class="start" id="start" disabled>▶&nbsp; Start Journey</button>
+    <div class="why" id="why">Pick a destination to enable Start.</div>
+   </section>
+
+   <section class="card" id="manual">
+    <div class="hd"><div><h2>Manual Control</h2><small>Hold to drive. Release to stop.</small></div></div>
+    <div class="manual">
+     <div class="pad" id="pad"><button class="u" data-k="ArrowUp" aria-label="Forward">▲</button><button class="l" data-k="ArrowLeft" aria-label="Turn left">◀</button><button class="c">○</button><button class="r" data-k="ArrowRight" aria-label="Turn right">▶</button><button class="d" data-k="ArrowDown" aria-label="Back">▼</button></div>
+     <div><small style="color:var(--mute)">Speed</small><input type="range" id="sp" min="5" max="50" value="30"><div style="text-align:center;font-size:13px" id="spv">0.30 m/s</div>
+      <div class="why" style="text-align:center">▲▼ move · ◀▶ turn · arrow keys work too</div></div>
+    </div>
+    <button class="stop" id="stop"><span style="font-size:26px">⏹</span><span>STOP ROBOT<small>Emergency Stop</small></span></button>
+   </section>
+
+   <section class="card" id="set" style="display:none">
+    <div class="hd"><div><h2>Engineer tools</h2><small>Changes affect every student</small></div></div>
+    <div><button class="dest">Start fresh map</button><button class="dest">Import map</button><button class="dest">Edit map</button><button class="dest" style="color:var(--stop)">Clear map</button></div>
+   </section>
+
+   <section class="card voice" id="voice">
+    <div class="hd"><div><h2>Voice Assistant</h2><small id="vsub">Tap the mic and speak</small></div></div>
+    <div class="vrow"><button class="mic" id="mic" aria-label="Start listening">🎤</button>
+     <div class="vtxt"><div id="vheard" class="vheard">Try: “Go to Home”</div><div id="vreply" class="vreply" aria-live="polite"></div></div></div>
+    <div class="chips" id="chips"><button>Go to Home</button><button>Send to charging</button><button>Where are you?</button><button>Save this spot</button><button>Stop</button></div>
+    <div class="msg"><input id="mi" placeholder="Or type a command..."><button id="ms" aria-label="Send">➤</button></div>
+    <label class="vs"><input type="checkbox" id="vo" checked> Speak replies</label>
+   </section>
+  </div>
+ </div>
+</main>
+</div>
+
+<script src="js/app.js"></script>
+</body></html>
